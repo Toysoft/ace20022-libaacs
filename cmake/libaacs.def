@@ -1,5 +1,3 @@
-LIBRARY "libaacsd.dll"
-
 EXPORTS
     aacs_close
     aacs_decrypt_unit
@@ -22,4 +20,3 @@ EXPORTS
     aacs_register_file
     aacs_select_title
     aacs_set_fopen
-	

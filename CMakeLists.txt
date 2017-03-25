@@ -5,7 +5,7 @@ project(libaacs VERSION 0.8.2 LANGUAGES C)
 #find_package(libpgp-error 1.2.7 REQUIRED NO_MODULE)
 
 if(MSVC)
-  set(CMAKE_DEBUG_POSTFIX "d")
+  #set(CMAKE_DEBUG_POSTFIX "d")
 endif()
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/win_bison.exe)
@@ -96,4 +96,23 @@ add_custom_command(
    COMMAND ${BISON_CMD} -l -y -d -p libaacs_yy -o ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.y
 )
 
-target_link_libraries(libaacs PRIVATE libgcrypt::libgcrypt)
+target_link_libraries(libaacs PRIVATE "C:/XBMC/libgcrypt-1.7.6_cmake/build/RelWithDebInfo/libgcrypt.lib")
+
+set(EX_SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/examples/aacs_info.c
+)
+
+ADD_EXECUTABLE(aacsinfo ${EX_SRCS})
+target_compile_definitions(aacsinfo
+  PRIVATE
+  HAVE_CONFIG_H
+  _CRT_SECURE_NO_WARNINGS
+  _CRT_NONSTDC_NO_WARNINGS)
+  
+target_include_directories(aacsinfo
+  PRIVATE
+  $<BUILD_INTERFACE:.;cmake;src;${CMAKE_CURRENT_BINARY_DIR}>
+  INTERFACE
+)
+add_dependencies(aacsinfo libaacs)
+target_link_libraries(aacsinfo PRIVATE libaacs)
