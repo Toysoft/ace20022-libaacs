@@ -25,6 +25,10 @@ else()
   return()
 endif()
 
+   execute_process(COMMAND ${FLEX_CMD} -L ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.l)
+   execute_process(COMMAND ${CMAKE_COMMAND} -E rename ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c
+                   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.c)
+   execute_process(COMMAND ${BISON_CMD} -l -y -d -p libaacs_yy -o ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.y)
 set(SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libaacs.def
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/aacs-version.h
@@ -53,6 +57,7 @@ set(SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydb.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.c
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/mmc_device.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/path.h
@@ -85,15 +90,6 @@ target_include_directories(libaacs
   $<BUILD_INTERFACE:.;cmake;src;src/util;${CMAKE_CURRENT_BINARY_DIR}>
   INTERFACE
   $<INSTALL_INTERFACE:include/libaacs>
-)
-
-add_custom_command(
-   TARGET libaacs
-   PRE_BUILD
-   COMMAND ${FLEX_CMD} -L ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.l
-   COMMAND ${CMAKE_COMMAND} -E rename ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c
-                   ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.c
-   COMMAND ${BISON_CMD} -l -y -d -p libaacs_yy -o ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.y
 )
 
 target_link_libraries(libaacs PRIVATE "C:/XBMC/libgcrypt-1.7.6_cmake/build/RelWithDebInfo/libgcrypt.lib")
